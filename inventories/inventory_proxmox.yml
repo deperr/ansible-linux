@@ -1,0 +1,11 @@
+---
+
+plugin: community.proxmox.proxmox
+url: "{{ lookup('env', 'PROXMOX_URL') }}"
+user: "{{ lookup('env', 'PROXMOX_USER') }}"
+password: "{{ lookup('env', 'PROXMOX_PASSWORD') }}"
+validate_certs: false
+# Groups VMs by status (running/stopped)
+keyed_groups:
+  - key: status
+    prefix: statu
