@@ -5,7 +5,23 @@ url: "{{ lookup('env', 'PROXMOX_URL') }}"
 user: "{{ lookup('env', 'PROXMOX_USER') }}"
 password: "{{ lookup('env', 'PROXMOX_PASSWORD') }}"
 validate_certs: false
-# Groups VMs by status (running/stopped)
+want_facts: true
+
+compose:
+  ansible_host: >-
+    proxmox_agent_interfaces 
+    | default([]) 
+    | map(attribute='ip-addresses') 
+    | flatten 
+    | reject('match', '127.0.0.1') 
+    | reject('match', '::1') 
+    | first 
+    | default(inventory_hostname)
+
+# This groups your VMs automatically in AAP
 keyed_groups:
-  - key: status
-    prefix: statu
+  - key: proxmox_tags_parsed
+    prefix: tag
+    separator: _
+  - key: proxmox_status
+    prefix: status
